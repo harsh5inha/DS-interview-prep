@@ -1,0 +1,1007 @@
+---
+title: "R"
+author: "Harsh Sinha"
+date: "10/29/2018"
+output: pdf_document
+---
+
+%% is modulo and gives the remainder.  X <- 42 assigns value of 42 to variable x.  
+
+Decimals like 4.5 are called numerics. Natural numbers like 4 are called integers. Integrers are also numerics. Boolean values like true and false are called logical. Text or string values are called characters.
+
+ A vector is a simple tool to store data, a one-dimensional array that can hold numeric, character, or logical data. You can create vectors by using the combine function. so numeric_vector <- c(1, 10, 49). 
+
+names(vector_name) <- c(category_1, category_2, category_3) this gives a name to each entry in vector_name. 
+
+To add numbers in a vector it's sum(vector_name). Can use >, <, ==, and get TRUE/ FALSE as output. 
+
+To select the first element of vector_name, it's vector_name[1]. 
+
+can make another vector inside of one, as in a vector which claims certain entries of the larger 
+one like vector_2 <- vector_1[ c(2, 3, 4)]
+
+can shorten [c(2, 3, 4)] as [2:4]
+
+mean() to get average
+
+vector_A <- Vector_B > 0 will print out as TRUE or FALSE  for each entry greater than zero
+
+Assigning a vector values of another vector which are true or false will create a vector of only the true values:
+```{r}
+# Poker and roulette winnings from Monday to Friday:
+poker_vector <- c(140, -50, 20, -120, 240)
+roulette_vector <- c(-24, -50, 100, -350, 10)
+days_vector <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+names(poker_vector) <- days_vector
+names(roulette_vector) <- days_vector
+
+# Which days did you make money on poker?
+selection_vector <- poker_vector > 0
+
+# Select from poker_vector these days
+poker_winning_days <- poker_vector[selection_vector]
+
+poker_winning_days
+```
+
+A matrix is a collection of elements of the same data type (numeric, character, or logical) arranged into a fixed number of rows and columns. So 2-D.
+
+In the matrix() function:
+The first argument is the collection of elements that R will arrange into the rows and columns of the matrix. Here, we use 1:9 which is a shortcut for c(1, 2, 3, 4, 5, 6, 7, 8, 9).
+The argument byrow indicates that the matrix is filled by the rows. If we want the matrix to be filled by the columns, we just place byrow = FALSE.
+The third argument nrow indicates that the matrix should have three rows.
+
+matrix(1:9, byrow = FALSE, nrow = 3) will create a matrix of the numbers one to nine from top to bottom of three rows and columns
+
+Can name the rows and columns of matrices:
+```{r}
+# Box office Star Wars (in millions!)
+new_hope <- c(460.998, 314.4)
+empire_strikes <- c(290.475, 247.900)
+return_jedi <- c(309.306, 165.8)
+
+# Construct matrix
+star_wars_matrix <- matrix(c(new_hope, empire_strikes, return_jedi), nrow = 3, byrow = TRUE)
+
+# Vectors region and titles, used for naming
+region <- c("US", "non-US")
+titles <- c("A New Hope", "The Empire Strikes Back", "Return of the Jedi")
+
+# Name the columns with region
+colnames(star_wars_matrix) <- region
+
+# Name the rows with titles
+rownames(star_wars_matrix) <- titles
+
+# Print out star_wars_matrix
+star_wars_matrix
+
+#Sums the rows:
+
+# Construct star_wars_matrix
+box_office <- c(460.998, 314.4, 290.475, 247.900, 309.306, 165.8)
+star_wars_matrix <- matrix(box_office, nrow = 3, byrow = TRUE,
+                           dimnames = list(c("A New Hope", "The Empire Strikes Back", "Return of the Jedi"), 
+                                           c("US", "non-US")))
+
+# Calculate worldwide box office figures
+worldwide_vector <- rowSums(star_wars_matrix)
+Worldwide_vector
+```
+
+Can add columns to matrices by using the cbind() function together.
+
+In the previous exercise you calculated the vector that contained the worldwide box office receipt for each of the three Star Wars movies. However, this vector is not yet part of star_wars_matrix.
+You can add a column or multiple columns to a matrix with the cbind() function, which merges matrices and/or vectors together by column. For example:
+big_matrix <- cbind(matrix1, matrix2, vector1 ...)
+
+```{r}
+# Construct star_wars_matrix
+box_office <- c(460.998, 314.4, 290.475, 247.900, 309.306, 165.8)
+star_wars_matrix <- matrix(box_office, nrow = 3, byrow = TRUE,
+                           dimnames = list(c("A New Hope", "The Empire Strikes Back", "Return of the Jedi"), 
+                                           c("US", "non-US")))
+
+# The worldwide box office figures
+worldwide_vector <- rowSums(star_wars_matrix)
+
+# Bind the new variable worldwide_vector as a column to star_wars_matrix
+all_wars_matrix <- cbind(star_wars_matrix, worldwide_vector)
+all_wars_matrix
+```
+
+Selecting from within a matrix
+	Similar to vectors, you can use the square brackets [ ] to select one or multiple elements from a matrix. Whereas vectors have one dimension, matrices have two dimensions. You should therefore use a comma to separate that what to select from the rows from that what you want to select from the columns. For example:
+my_matrix[1,2] selects the element at the first row and second column.
+my_matrix[1:3,2:4] results in a matrix with the data on the rows 1, 2, 3 and columns 2, 3, 4.
+If you want to select all elements of a row or a column, no number is needed before or after the comma, respectively:
+my_matrix[,1] selects all elements of the first column.
+my_matrix[1,] selects all elements of the first row.
+
+
+Similar to what you have learned with vectors, the standard operators like +, -, /, *, etc. work in an element-wise way on matrices in R.
+For example, 2 * my_matrix multiplies each element of my_matrix by two.
+
+In this chapter you dive into the wonderful world of factors.
+The term factor refers to a statistical data type used to store categorical variables. The difference between a categorical variable and a continuous variable is that a categorical variable can belong to a limited number of categories. A continuous variable, on the other hand, can correspond to an infinite number of values.
+
+There are two types of categorical variables: a nominal categorical variable and an ordinal categorical variable.
+A nominal variable is a categorical variable without an implied order. This means that it is impossible to say that 'one is worth more than the other'. For example, think of the categorical variable animals_vector with the categories "Elephant", "Giraffe", "Donkey" and "Horse". Here, it is impossible to say that one stands above or below the other. (Note that some of you might disagree ;-) ).
+In contrast, ordinal variables do have a natural ordering. Consider for example the categorical variable temperature_vector with the categories: "Low", "Medium"and "High". Here it is obvious that "Medium" stands above "Low", and "High" stands above "Medium".
+
+
+	speed_vector should be converted to an ordinal factor since its categories have a natural ordering. By default, the function factor() transforms speed_vector into an unordered factor. To create an ordered factor, you have to add two additional arguments: ordered and levels.
+factor(some_vector,
+       ordered = TRUE,
+       levels = c("lev1", "lev2" ...))
+
+
+By setting the argument ordered to TRUE in the function factor(), you indicate that the factor is ordered. With the argument levels you give the values of the factor in the correct order.
+
+```{r}
+# Create speed_vector
+speed_vector <- c("fast", "slow", "slow", "fast", "insane")
+
+# Convert speed_vector to ordered factor vector
+factor_speed_vector <- factor(speed_vector, ordered=TRUE, levels = c("slow", "fast", "insane"))
+
+# Print factor_speed_vector
+factor_speed_vector
+summary(factor_speed_vector)
+
+
+From speed_vector, create an ordered factor vector: factor_speed_vector. Set ordered to TRUE, and set levels to c("slow", "fast", "insane").
+# Create factor_speed_vector
+speed_vector <- c("fast", "slow", "slow", "fast", "insane")
+factor_speed_vector <- factor(speed_vector, ordered = TRUE, levels = c("slow", "fast", "insane"))
+
+# Factor value for second data analyst
+da2 <- factor_speed_vector[2]
+
+# Factor value for fifth data analyst
+da5 <- factor_speed_vector[5]
+
+# Is data analyst 2 faster than data analyst 5?
+da2 > da5
+[1] da2 > da5 = FALSE
+```
+
+DataFrames
+
+A data frame has the variables of a data set as columns and the observations as rows.
+
+The function head() enables you to show the first observations of a data frame. Similarly, the function tail() prints out the last observations in your data set.
+
+Both head() and tail() print a top line called the 'header', which contains the names of the different variables in your data set.
+nother method that is often used to get a rapid overview of your data is the function str(). The function str() shows you the structure of your data set. For a data frame it tells you:
+
+The total number of observations (e.g. 32 car types)
+The total number of variables (e.g. 11 car features)
+A full list of the variables names (e.g. mpg, cyl ... )
+The data type of each variable (e.g. num)
+The first observations
+
+```{r}
+# Definition of vectors
+name <- c("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+type <- c("Terrestrial planet", "Terrestrial planet", "Terrestrial planet", 
+          "Terrestrial planet", "Gas giant", "Gas giant", "Gas giant", "Gas giant")
+diameter <- c(0.382, 0.949, 1, 0.532, 11.209, 9.449, 4.007, 3.883)
+rotation <- c(58.64, -243.02, 1, 1.03, 0.41, 0.43, -0.72, 0.67)
+rings <- c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+
+# Create a data frame from the vectors
+planets_df <- data.frame(name, type, diameter, rotation, rings)
+Planets_df
+This will create a data frame with all of this information in one frame
+To select the diameter of Mercury it’s planets_df[1,3] or, planets_df[1,”diameter”]
+You will often want to select an entire column, namely one specific variable from a data frame. If you want to select all elements of the variable diameter, for example, both of these will do the trick:
+
+planets_df[,3]
+planets_df[,"diameter"]
+However, there is a short-cut. If your columns have names, you can use the $ sign:
+
+planets_df$diameter
+
+# planets_df and rings_vector are pre-loaded in your workspace
+
+# Adapt the code to select all columns for planets with rings
+Planets_df[rings_vector,]
+subset(my_df, subset = some_condition)
+The first argument of subset() specifies the data set for which you want a subset. By adding the second argument, you give R the necessary information and conditions to select the correct subset.
+
+The code below will give the exact same result as you got in the previous exercise, but this time, you didn't need the rings_vector!
+
+subset(planets_df, subset = rings)
+# planets_df is pre-loaded in your workspace
+
+# Use order() to create positions
+positions <-  order(planets_df$diameter)
+positions
+# Use positions to sort planets_df
+planets_df[positions,]
+```
+
+
+LISTS
+A list in R is similar to your to-do list at work or school: the different items on that list most likely differ in length, characteristic, type of activity that has to do be done, ...
+A list in R allows you to gather a variety of objects under one name (that is, the name of the list) in an ordered way. These objects can be matrices, vectors, data frames, even other lists, etc. It is not even required that these objects are related to each other in any way.
+You could say that a list is some kind super data type: you can store practically any piece of information in it!
+
+Well done, you're on a roll!
+
+Just like on your to-do list, you want to avoid not knowing or remembering what the components of your list stand for. That is why you should give names to them:
+
+my_list <- list(name1 = your_comp1, 
+                name2 = your_comp2)
+This creates a list with components that are named name1, name2, and so on. If you want to name your lists after you've created them, you can use the names() function as you did with vectors. The following commands are fully equivalent to the assignment above:
+
+my_list <- list(your_comp1, your_comp2)
+names(my_list) <- c("name1", "name2")
+Your list will often be built out of numerous elements and components. Therefore, getting a single element, multiple elements, or a component out of it is not always straightforward.
+
+One way to select a component is using the numbered position of that component. For example, to "grab" the first component of shining_list you type
+
+shining_list[[1]]
+A quick way to check this out is typing it in the console. Important to remember: to select elements from vectors, you use single square brackets: [ ]. Don't mix them up!
+
+You can also refer to the names of the components, with [[ ]] or with the $ sign. Both will select the data frame representing the reviews:
+
+shining_list[["reviews"]]
+shining_list$reviews
+Besides selecting components, you often need to select specific elements out of these components. For example, with shining_list[[2]][1] you select from the second component, actors (shining_list[[2]]), the first element ([1]). When you type this in the console, you will see the answer is Jack Nicholson.
+
+
+So now you know about 
+Vectors: 1-D, all the same data type
+Matrices: 2-D, all the same data type
+Dataframes: 2-D, made up of multiple columns, each column will have the same data type, but columns can vary in data type. 
+Lists: unlimited-D, really just a grouping of vectors, matrices, dataframes, and other lists. Made up of elements and components. Elements are within the coponents.
+
+
+INTERMEDIATE R
+
+Relational Operators
+
+> TRUE == TRUE
+[1] TRUE
+
+> “hello” == “goodbye”
+[1] FALSE
+
+!= is not equal to
+
+“Hello” > “Goodbye”
+[1] TRUE
+
+Because H comes after G in alphabetical order
+
+TRUE < FALSE
+[1] FALSE
+
+Because TRUE corresponds to 1 and FALSE corresponds to 0
+
+<= , >= is greater than or equal to and less than or equal to
+facebook <- c(4, 5, 6, 7,812, 45 , 768)
+linkdin <- c(5, 6, 72, 345, 2345, 2345, 55)
+facebook <= linkdin
+[1]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+facebook <- c(17, 7, 5, 16, 8, 13, 14)
+views <- matrix(c(linkedin, facebook), nrow = 2, byrow = TRUE)
+
+# When does views equal 13?
+views == 13
+
+LOGICAL OPERATORS
+AND operator &
+
+TRUE & TRUE
+[1] TRUE
+
+TRUE & FALSE
+[1] FALSE
+
+FALSE & TRUE
+[1] FALSE
+
+FALSE & False
+[1] FALSE
+
+>	x<- 12
+>	x > 5 & x < 15
+[1] TRUE
+
+
+> c(TRUE, TRUE, FALSE) & c(TRUE, FALSE, FALSE)
+[1] TRUE TRUE FALSE
+
+But,
+
+> c(TRUE, TRUE, FALSE) && c(TRUE, FALSE, FALSE)
+[1] TRUE 
+
+Because it only looks at the first entry
+
+OR operator |
+
+TRUE | TRUE
+[1] TRUE
+
+TRUE | FALSE
+[1] TRUE
+
+FALSE | TRUE
+[1] TRUE
+
+FALSE | FALSE
+[1] FALSE
+
+
+ >	y <- 4
+>	y < 5 | y > 15
+[1] TRUE
+
+
+> c(TRUE, TRUE, FALSE) | c(TRUE, FALSE, FALSE)
+[1] TRUE TRUE FALSE
+
+But,
+
+> c(TRUE, TRUE, FALSE) || c(TRUE, FALSE, FALSE)
+[1] TRUE 
+
+Because it only looks at the first entry
+
+
+NOT operator !
+
+> !TRUE
+[1] FALSE
+
+> !FALSE
+[1] TRUE
+
+
+>	!(x < 5)
+>	x >= 5
+
+These are the same thing
+
+is.numeric(5)
+[1] TRUE
+
+!is.numeric(5)
+[1] FALSE
+
+> !c(TRUE, TRUE, FALSE)
+[1] FALSE FALSE TRUE
+
+
+Before you work your way through the next exercises, have a look at the following R expressions. All of them will evaluate to TRUE:
+
+TRUE & TRUE
+FALSE | TRUE
+5 <= 5 & 2 < 3
+3 < 4 | 7 < 6
+Watch out: 3 < x < 7 to check if x is between 3 and 7 will not work; you'll need 3 < x & x < 7 for that.
+
+```{r}
+# The linkedin and last variable are already defined for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+last <- tail(linkedin, 1)
+
+# Is last under 5 or above 10?
+5 > last |last > 10 
+[1] TRUE
+
+# Is last between 15 (exclusive) and 20 (inclusive)?
+15<last & last <=20
+[1] FALSE
+
+# The social data (linkedin, facebook, views) has been created for you
+
+# linkedin exceeds 10 but facebook below 10
+10 < linkedin & facebook < 10
+
+# When were one or both visited at least 12 times?
+12 <= linkedin | facebook >= 12
+
+# When is views between 11 (exclusive) and 14 (inclusive)?
+11 < views & views <= 14
+
+
+# li_df is pre-loaded in your workspace
+
+# Select the second column, named day2, from li_df: second
+second <- li_df[,"day2"]
+
+# Build a logical vector, TRUE if value in second is extreme: extremes
+extremes <- (5 > second | second > 25)
+
+# Count the number of TRUEs in extremes
+sum(extremes)
+```
+
+
+
+CONDITIONAL STATEMENTS
+
+if(condition) {
+	expr1
+}	else if(condition2)	{
+	expr2
+}	else	{
+	expr3
+}
+
+
+
+You can do anything you want inside if-else constructs. You can even put in another set of conditional statements. Examine the following code chunk:
+if (number < 10) {
+  if (number < 5) {
+    result <- "extra small"
+  } else {
+    result <- "small"
+  }
+} else if (number < 100) {
+  result <- "medium"
+} else {
+  result <- "large"
+}
+print(result)
+
+If number is set to 6, "small" gets printed to the console.
+
+If number is set to 4, "extra small" gets printed out to the console.
+
+
+
+```{r}
+# Variables related to your last day of recordings
+li <- 15
+fb <- 9
+
+# Code the control-flow construct
+if (li >= 15 & fb >= 15) {
+  sms <- 2 * (li + fb)
+} else if (li < 10 & fb < 10) {
+  sms <- 0.5 * (li + fb)
+} else {
+  sms <- li + fb
+}
+
+# Print the resulting sms to the console
+Sms
+```
+
+Functions:
+
+Runif?
+```{r}
+x = seq( from = -2 , to = 2 , by = 0.1 ) 		# Specify vector of x values.
+y = xˆ2 						# Specify corresponding y values.
+plot( x , y , col="skyblue" , type="l" ) 		# Plot the x,y points as a blue line.
+```
+The segment of code, type="l" (that’s a letter
+“l” not a numeral “1”) tells R to plot connecting lines between the points, with no
+distinctive symbols marking the points. If we omitted that part of the command, then
+R would plot only points by default, not the connecting lines.
+
+
+The double equal sign tests for equality and returns a value of TRUE or FALSE.
+
+
+unintended results due to the limited precision of representing numbers in the computer’s
+memory. For example, in most computers, the value of 0.5 − 0.3 does not equal the
+value of 0.3 − 0.1, even though mathematically they are equivalent. Therefore, R has
+another function, all.equal, for testing equality up to the degree of precision for the
+computer being used. For example:
+> x = 0.5 - 0.3
+> y = 0.3 - 0.1
+> x == y # although mathematically TRUE, it’s FALSE for limited precision
+[1] FALSE
+> all.equal(x,y) # equal up to precision of computer
+[1] TRUE
+
+
+
+3.4.1.3 The colon operator and sequence function
+The colon operator, :, makes sequences of integers. For example, 4:7 creates the
+vector 4, 5, 6, 7. The combine function and the colon operator are used very often
+in R programming. The colon operator has precedence over basic arithmetical
+operators, but not over the power operator. Consider carefully the output of these
+examples:
+> 2+3:6 # colon operator has precedence over addition
+[1] 5 6 7 8
+> (2+3):6 # parentheses override default precedence
+[1] 5 6
+> 1:3ˆ2 # power operator has precedence over colon operator
+[1] 1 2 3 4 5 6 7 8 9
+> (1:3)ˆ2 # parentheses override default precedence
+[1] 1 4 9
+In general, to be sure that the computations are executed in the order that you intend,
+include explicit parentheses.
+The sequence function, seq, is very handy for creating vectors that consist of
+regular sequences of numbers. In its basic form, the user specifies the starting value
+of the sequence, the ending value, and the increment between successive values,
+like this:
+> seq( from=0 , to=3 , by=0.5 ) # length not specified
+[1] 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+If the increment is not an exact divisor of the distance between the starting and ending
+values, the sequence will not exceed the ending value. For example:
+> seq( from=0 , to=3 , by=0.5001 ) # will not exceed end value
+[1] 0.0000 0.5001 1.0002 1.5003 2.0004 2.5005
+
+
+The seq function is clever and will infer whatever value is omitted by the user.
+This capability can be very useful, for example if we want a sequence of a certain
+length and do not care about the exact end point or the increment. Consider these
+examples:
+
+
+> seq( from=0 , by=0.5 , length.out=7 ) # end not specified
+[1] 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+> seq( from=0 , to=3 , length.out=7 ) # increment not specified
+[1] 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+> seq( to=3 , by=0.5 , length.out=7 ) # start not specified
+[1] 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+
+
+The replicate function, rep, is also very useful for creating vectors. Here are some
+examples:
+> ABC = c("A","B","C") # define a vector for replication
+> rep( ABC, 2 )
+[1] "A" "B" "C" "A" "B" "C"
+> rep( ABC, times=2 )
+[1] "A" "B" "C" "A" "B" "C"
+> rep( ABC, times=c(4,2,1) )
+[1] "A" "A" "A" "A" "B" "B" "C"
+> rep( ABC, each=2 )
+[1] "A" "A" "B" "B" "C" "C"
+> rep( ABC, each=2, length=10)
+[1] "A" "A" "B" "B" "C" "C" "A" "A" "B" "B"
+> rep( ABC, each=2, times=3)
+[1] "A" "A" "B" "B" "C" "C" "A" "A" "B" "B" "C" "C" "A" "A" "B" "B" "C" "C"
+
+
+Here is an example to test your understanding of the rep function:
+> rep( ABC, each=2, times=c(1,2,3,1,2,3) )
+[1] "A" "A" "A" "B" "B" "B" "B" "C" "C" "C" "C" "C"
+ 
+To recapitulate and summarize, here are some different ways to get at the elements
+of a vector:
+ 
+```{r}
+x = c( 2.718 , 3.14 , 1.414 , 47405 ) # define the vector
+names(x) = c( "e" , "pi" , "sqrt2" , "zipcode") # name the components
+
+x[c(2,4)] # which indices to include
+
+x[c(-1,-3)] # which indices to exclude
+
+x[c(FALSE,TRUE,FALSE,TRUE)] # for each position, include it?
+
+x[c("pi","zipcode")] # names of indices to include
+
+```
+Factors
+
+Factors are a type of vector in R for which the elements are categorical values that could also be ordered. The values are stored internally as integers with labeled levels.
+
+If we want to specify a particular
+order for the levels, we can do so with additional arguments in the factor function, like
+this:
+> xfo = factor( x , levels=c("low","medium","high") , ordered=TRUE )
+> xfo
+[1] high medium low high medium
+Levels: low < medium < high
+
+You can think of the real contents of the factor as being the integer indices of the levels, along with a legend that decodes each integer into a level name.
+
+
+We might want to relabel the levels of a factor. For example, the vector x used
+elements named low, medium, and high. The levels argument of the factor function
+must refer to those exact terms for reading in the data. But for the resulting output, the
+levels can be relabeled to whatever might be more meaningful for the application, such
+as “Bottom SES,” “Middle SES,” and “Top SES.” We accomplish the relabeling in R
+with the labels argument:
+
+> xfol = factor( x , levels=c("low","medium","high") , ordered=TRUE ,
+labels=c("Bottom SES","Middle SES","Top SES") )
+
+
+> xfol
+[1] Top SES Middle SES Bottom SES Top SES Middle SES
+Levels: Bottom SES < Middle SES < Top SES
+
+
+
+> matrix( 1:6 , nrow=2 , 		# with names of dimensions and rows and columns
++ dimnames=list( TheRowDimName=c("Row1Name","Row2Name") ,
++ TheColDimName=c("Col1Name","Col2Name", "Col3Name") ) )
+
+TheColDimName
+TheRowDimName Col1Name Col2Name Col3Name
+Row1Name 		1 		3 		5
+Row2Name 		2 		4 		6
+
+
+An array is a generalization of a matrix to multiple dimensions. There is really no
+need for a separate matrix function because it is merely the two-dimensional case of
+the array function. In the array function, the first argument specifies the ordered
+contents, the second argument specifies the size of each dimension, and an optional
+third argument specifies the names of the dimensions and levels within dimensions.
+(The names are specified as a list, which is a structure that is described explicitly very
+soon, in Section 3.4.4.) It is important to understand that the array function fills the
+array by incrementing the first index (row) first, then incrementing the second index
+(column) next, then incrementing the third index (layer) next, and so forth. Unlike the
+matrix function, there is no built-in way to load the contents into the array in a different
+ordering of dimensions.
+Here is an example of a three-dimensional array. I have referred to the third
+dimension as a “layer.” Notice that the contents are the integers 1-24, and they are
+filled into the array by first incrementing the row, then the column, and then the layer.
+
+> a = array( 1:24 , dim=c(3,4,2) , # 3 rows, 4 columns, 2 layers
++ dimnames = list( RowDimName = c("R1","R2","R3") ,
++ ColDimName = c("C1","C2","C3","C4") ,
++ LayDimName = c("L1","L2") ) )
+> a
+, , LayDimName = L1
+ColDimName
+RowDimName C1 C2 C3 C4
+R1 1 4 7 10
+R2 2 5 8 11
+R3 3 6 9 12
+, , LayDimName = L2
+ColDimName
+RowDimName C1 C2 C3 C4
+R1 13 16 19 22
+R2 14 17 20 23
+R3 15 18 21 24
+
+> a["R3",,"L2"] # returns all columns of R3 and L2, as a vector
+C1 C2 C3 C4
+15 18 21 24
+> a["R3","C4",] # returns all layers of R3 and C4, as a vector
+L1 L2
+12 24
+
+
+The list structure is a generic vector in which components can be of different types, and
+named. The list structure was used in previous examples to specify dimension names in
+the matrix and array functions. Below is an example of a list in which the first element
+is a vector of integers named “a,” the second element is a matrix of integers named “b,”
+and the third element is a string named “c.”
+> MyList = list( "a"=1:3 , "b"=matrix(1:6,nrow=2) , "c"="Hello, world." )
+> MyList
+$a
+[1] 1 2 3
+$b
+[,1] [,2] [,3]
+[1,] 1 3 5
+[2,] 2 4 6
+$c
+[1] "Hello, world."
+The named components of a list can be referred to by appending the list name with
+a “$” and the component name. Consider these examples:
+> MyList$a # the contents of the list item named "a"
+[1] 1 2 3
+> MyList$a[2] # the second element of the list item named "a"
+[1] 2
+
+
+The contents of the list can also be accessed with (numerical) indices inside square
+brackets. There is an additional layer of nuance for referring to named components,
+however. We can get element i from a list, including its name, by putting i inside single
+square brackets. We can get the contents of element i by putting i inside double square
+brackets. Consider these examples:
+> MyList[[1]] # the contents of the first list item
+[1] 1 2 3
+> MyList[[1]][2] # the second element of the first list item
+[1] 2
+> MyList[1] # the first list item, including its name
+$a
+[1] 1 2 3
+> MyList[1][2] # does not make sense in this case
+$<NA>
+NULL
+
+
+DATA FRAMES
+
+A data frame is much like a matrix, insofar as it has several columns of equal length. But
+each column can be of a different type, and, in particular, columns can be factors. A data
+frame is really a type of list in which each component is thought of as a named column
+of a matrix, with different columns possibly of different types. The elements of a data
+frame can be accessed as if it were a list or as if it were a matrix. Consider this example:
+> d = data.frame( Integers=1:3 , NumberNames=c("one","two","three") )
+> d
+Integers NumberNames
+1 1 one
+2 2 two
+3 3 three
+In the display of data frame d, above, the column of numbers on the far left side shows
+the row names supplied, by default, by the data.frame function. Do not confuse those
+row names with the contents of the columns.
+The elements of the data frame can be accessed as for a list, by using names or single
+brackets or double brackets:
+> d$NumberNames # notice this is a factor
+[1] one two three
+Levels: one three two
+> d[[2]] # the second element contents
+[1] one two three
+Levels: one three two
+> d[2] # the second element with its name
+NumberNames
+1 one
+2 two
+3 three
+The elements of the data frame can also be accessed as for a matrix, using row and
+column indices:
+> d[,2] # elements can be accessed as if it’s a matrix
+[1] one two three
+Levels: one three two
+> d[2,] # elements can be accessed as if it’s a matrix
+Integers NumberNames
+2 2 two
+Data frames are important because they are the default format for data loaded into R by
+the often-used function read.table, as we will explore next.
+
+
+CSV files are easily loaded into R’s memory using the read.csv function. Suppose
+that the data above are saved in a file called HGN.csv. Then the data can be loaded into
+a variable I’ve named HGNdf as follows:
+> HGNdf = read.csv( "HGN.csv" )
+The resulting variable, HGNdf, is a data frame in R. Thus, the columns of HGNdf are
+vectors or factors, named according to the words in the first row of the CSV file, and all
+of length equal to the number of data rows in the CSV file.
+
+It is important to note that columns with any character (non-numeric) entries are
+turned into factors (recall that Section 3.4.2 described factors). For example, the Hair
+column is a factor:
+> HGNdf$Hair
+[1] black brown blond black black red brown
+Levels: black blond brown red
+> as.numeric(HGNdf$Hair)
+[1] 1 3 2 1 1 4 3
+
+
+
+
+
+
+To convert a factor to an ordinary vector, as you may want to do to convert names from a factor back into actual words. Use the function as.vector, like this:
+
+> HGNdf$Name = as.vector( HGNdf$Name )
+> HGNdf$Name
+[1] "Alex" "Betty" "Carla" "Diane" "Edward" "Frank" "Gabrielle"
+
+The read.csv function is a special case of the more general read.table function.
+
+3.5.2. Saving data from R
+
+In most real research situations, data are obtained from some measurement device or
+survey outside of R. The collected data are then loaded into R using a function such
+as read.csv, as explained above. Sometimes, however, we want to save reformatted or
+transformed data from R.
+One way to save a data table is with the write.csv function. For example, the
+Command
+
+write.csv( HGNdf , file="HGN.csv" , row.names=FALSE , quote=FALSE )
+
+saves the data frame HGNdf as the file named HGN.csv, without including the row names and without putting all character elements inside double quotes (which write.csv
+would otherwise do by default). It is important to understand that the resulting file
+loses all information about levels in factors, because it is only a raw text file with no
+summary information.
+
+If you want to save data frames with all the factor information intact, then you can use
+the save command. The resulting file is in a special R format, not generic text, and the
+standard filename extension for this type of file is “.Rdata.” For example, the command
+
+save( HGNdf , file="HGN.Rdata" )
+
+saves the data frame HGNdf as the file named HGN.Rdata with all its factor information,
+and with the name of data frame (i.e., “HGNdf”). If desired, several different variables
+can all be saved in a single Rdata file, simply by specifying them as the initial comma separated arguments in the save command. All the variables are saved along with their
+Names.
+
+To retrieve an Rdata file, use the load function:
+
+> load( "HGN.Rdata" )
+
+The load function executes without explicitly showing the user any changes in R’s
+internal state. But R has, in fact, loaded the variables into its working memory. You
+can see the objects that R has in its active memory by typing
+
+> objects()
+[1] "HGNdf"
+
+The output from the objects function shows that R has HGNdf in its memory, in this
+case because it loaded that variable from the file HGN.Rdata. In the editor RStudio, a
+convenient way to see what objects are in R’s memory is by looking at the Workspace
+window (usually in the upper right or RStudio’s display). TheWorkspace window shows
+all the objects, organized by type.
+
+Utility Functions
+
+The summary function detects the type, or “class,” of the argument provided to it,
+and returns a summary appropriate for that class of object.
+
+Other useful functions for examining data objects are head, tail, and str. The head
+function returns the first few components of the variable put in its argument. The str
+function returns a compact display of the structure of its argument.
+
+The aggregate function is very useful for summarizing data according to factor
+characteristics.
+
+females with red hair, are not displayed.
+Another way to generate a table of counts is with the table function. Here is an
+example of its use and its output:
+> table(list(Gender=HGNdf$Gender,Hair=HGNdf$Hair))
+
+Hair
+Gender red blond brown black
+F 	0 	1	 2 	1
+M 	1 	0	 0 	2
+
+
+
+*Working Directory?
+
+
+3.7.3. Programming a function
+A function takes input values, called “arguments,” and does something with them. In
+general, a function in R in defined by code of the form:
+functionName = function( arguments ) { commands }
+The commands inside the curly braces can extend over many lines of code. When the
+function is called, it takes the values of the arguments in parentheses and uses them in
+the commands in the braces. You invoke the function by commanding R thus:
+functionName( arguments=argumentValues )
+As a simple example, consider this definition:
+asqplusb = function( a , b=1 ) {
+c = aˆ2 + b
+return( c )
+}
+The function is named asqplusb and it takes the value a, squares it, and adds the value
+b. The function then returns the result as output. Here is an example:
+> asqplusb( a=3 , b=2 )
+[1] 11
+In a function call, explicitly labeled arguments may go in any order:
+> asqplusb( b=2 , a=3 )
+[1] 11
+However, arguments without explicit labels must be in the order used in the definition
+of the function. Notice that these two function calls give different results:
+> asqplusb( 3 , 2 )
+[1] 11
+> asqplusb( 2 , 3 )
+[1] 7
+The function definition gave argument b a default value of 1 by specifying b=1 in
+the list of arguments. This means that if the function is called without an explicit value
+for b provided, the default value will be used. The argument a was not given a default
+value, however, and must always be specified in a call to the function. Consider these
+examples:
+> asqplusb( a=2 ) # b gets default value
+[1] 5
+> asqplusb( b=1 ) # error: a has no default value
+Error in aˆ2 : ’a’ is missing
+> asqplusb( 2 ) # argument value is assigned to first argument
+[1] 5
+In the last example above, there was only one unlabeled argument provided in the
+function call. R assigns that value to the first argument in the definition, regardless of
+whether the argument was defined with a default value.
+
+
+There are a variety of ways to have R execute a set of commands repeatedly. The
+most basic is the for loop. We specify a vector of values that R steps through, executing
+a set of commands for each value of the vector. Here is an example:
+> for ( countDown in 5:1 ) {
++ show(countDown)
++ }
+[1] 5
+[1] 4
+[1] 3
+[1] 2
+[1] 1
+Notice that the index countDown took on each of the values in the vector 5:1, and the
+command show(countDown) was executed. The entries in the vector do not need to be
+numeric. For example, they can be strings:
+> for ( note in c("do","re","mi") ) {
++ show(note)
++ }
+[1] "do"
+[1] "re"
+[1] "mi"
+There will be many examples of conditions and loops in the programs used later in the
+book. R has other ways for constructing loops and conditions (such as while), and ways
+for breaking out of loops (such as break). Type ?"Control" to read about them.
+
+
+Importing data into R
+
+Can check the working directory by using getwd
+Can change the working directory by using setwd
+Can load csv by using read.csv
+
+A kinda amateur way of getting the path to the data you want to load is to click on the little file icon under the environment header, selecting your data file, and then copy/pasting the appropriate section of the resulting error message into your script.
+
+R isn’t the same thing as the R studio. R studio is just a good interface to use R. 
+
+Running a regression in R
+
+Reg_ex1 <- lm(dependent_variable~explanatory_variables + connected_with_a_plus +variable4, data=where-you_are_getting_your_data_from)
+
+And this will save these regression results in an object called Reg_ex1
+
+plot(data$Dependent, data$x5)
+
+^That will basically give you a scatter plot of the two variables.
+
+
+
+
+Smoothing regression line of best fit 
+Depending on your actual data and how you want to smooth it, and why you want to smooth it there are various options.
+I am showing you examples with linear regression (first and second order) and local regression (LOESS). These may or may not be the good statistical models to use for your data, but it is difficult to tell without seeing it. In any case:
+
+time <- 0:100 
+temp <- 20+ 0.01 * time^2 + 0.8 * time + rnorm(101, 0, 5) 
+
+# Generate first order linear model 
+lin.mod <- lm(temp~time) 
+
+# Generate second order linear model 
+lin.mod2 <- lm(temp~I(time^2)+time) 
+
+# Calculate local regression 
+ls <- loess(temp~time)
+
+# Predict the data (passing only the model runs the prediction 
+# on the data points used to generate the model itself) 
+pr.lm <- predict(lin.mod)
+pr.lm2 <- predict(lin.mod2)
+pr.loess <- predict(ls)
+
+par(mfrow=c(2,2))
+plot(time, temp, "l", las=1, xlab="Time", ylab="Temperature") lines(pr.lm~time, col="blue", lwd=2) 
+
+plot(time, temp, "l", las=1, xlab="Time", ylab="Temperature") lines(pr.lm2~time, col="green", lwd=2) 
+
+plot(time, temp, "l", las=1, xlab="Time", ylab="Temperature") lines(pr.loess~time, col="red", lwd=2)
+
+Another option would be to use a moving average.
+
+For instance:
+library(zoo) mov.avg <- rollmean(temp, 5, fill=NA) plot(time, temp, "l") lines(time, mov.avg, col="orange", lwd=2)
+https://stackoverflow.com/questions/25283367/plot-a-best-fit-line-r
+
+Other Functions
+
+dnorm(x, mean = 0, sd = 1, log = FALSE)
+pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+rnorm(n, mean = 0, sd = 1)
+
+
+Arguments
+x, q
+vector of quantiles.
+p
+vector of probabilities.
+n
+number of observations. If length(n) > 1, the length is taken to be the number required.
+mean
+vector of means.
+sd
+vector of standard deviations.
+log, log.p
+logical; if TRUE, probabilities p are given as log(p).
+lower.tail
+logical; if TRUE (default), probabilities are P[X ≤ x] otherwise, P[X > x].
+
+If mean or sd are not specified they assume the default values of 0 and 1, respectively.
+
+
+
+In the zoo package there is a function called rollmean, which enables you to make moving averages. The rollmean(x,3) will take the previous, current and next value (ie 4, 6 and 2) in the table below. This is shown in the second column.
+
